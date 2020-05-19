@@ -11,8 +11,16 @@ try{
 }
 $records = $db->query('SELECT value FROM prechallenge3');
 $record = $records->fetchAll(PDO::FETCH_ASSOC);
-    print($record[0]."\n");
 
-echo "<pre>";
-print_r($record);
-echo "</pre>";
+$array = [1,2];
+
+
+for($i = 0; $i <= count($array); $i++){
+    if($i < count($array)){
+        print_r($array[$i].'<br>');
+    }else{
+        echo "<pre>";
+        print_r($array[$i-$i].','.$array[$i-1]);
+        echo "</pre>";
+    }
+}
