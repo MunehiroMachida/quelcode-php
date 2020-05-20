@@ -14,24 +14,13 @@ $record = $records->fetchAll(PDO::FETCH_ASSOC);
 
 
 
-$array = [1,2];
+$array = [1,2,3];
 
 
 $matome_str = '';
-for($i = 0; $i <= count($array); $i++){
-    if($i < count($array)){
-        $str = (string)$array[$i];
-        echo "<pre>";
-        var_dump($str);
-        echo "</pre>";
-        $matome_str .= $array[$i] . ',';
+for(){
+    for(){
 
-
-    }elseif($i == count($array)){
-        $matome_str = substr($matome_str, 0, -1);
-        echo "<pre>";
-        var_dump($matome_str);
-        echo "</pre>";
     }
 }
 
