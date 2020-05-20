@@ -52,17 +52,25 @@ $temps=kumiawase(array(1,2,3,4),$i); //$iは取り出す桁数。下のforで、
 $array_amount = count($temps); //配列の中身の数を数える　　数えるために↑が必要
 
 
-while($i <= $array_amount){ //$iは1。$array_amountは4。$iが$array_amount以下の場合、この場合は4まで繰り返す。
+// while($i <= $array_amount){ //$iは1。$array_amountは4。$iが$array_amount以下の場合、この場合は4まで繰り返す。
+//     $temps=kumiawase(array(1,2,3,4),$i);  //←ここなぜ再度入れる必要があるか考え中
+//     print "<ul>";
+//     foreach($temps as $temp){
+//         print "<li>".implode($temp)."</li>";
+//     }
+//     print "</ul>";
+//     $i++;
+// }
+
+
+for($i = 1; $i <= $array_amount; $i++){
     $temps=kumiawase(array(1,2,3,4),$i);  //←ここなぜ再度入れる必要があるか考え中
     print "<ul>";
     foreach($temps as $temp){
         print "<li>".implode($temp)."</li>";
     }
     print "</ul>";
-    $i++;
 }
-
-
 
 
 
