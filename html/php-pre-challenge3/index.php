@@ -38,17 +38,35 @@ function kumiawase($zentai,$nukitorisu){
 
 $items = [1,2,3,4];
 $array_amount = count($items);
-$str_box = '';
+$array_box = [];
 
 
 for($i = 1; $i <= $array_amount; $i++){
-    $temps=kumiawase($items,$i);
-    foreach($temps as $temp){
-        $str_box .= implode($temp).','.'<br>';
+    if(empty($array_box)){
+        $temps=kumiawase($items,$i);
+        $array_box = $temps;
+    }elseif(!empty($array_box)){
+        $temps=kumiawase($items,$i);
+        $array_box = array_merge($array_box,$temps);
     }
     
+
 }
 
 echo'<pre>';
-print ($str_box);
+print_r($array_box);
 echo'</pre>';
+
+
+// $temp = [];
+// $temp[] = [1];
+// $temp[] = [2];
+// $temp[] = [3];
+// $temp[] = [1,2];
+
+
+
+
+// echo'<pre>';
+// print_r($temp);
+// echo'</pre>';
