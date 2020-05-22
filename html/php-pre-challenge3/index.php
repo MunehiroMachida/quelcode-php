@@ -13,6 +13,8 @@ $records = $db->query('SELECT value FROM prechallenge3');
 $record = $records->fetchAll(PDO::FETCH_ASSOC);
 
 
+
+
 function kumiawase($zentai,$nukitorisu){
     $zentaisu=count($zentai);
     if($zentaisu<$nukitorisu){
@@ -36,10 +38,13 @@ function kumiawase($zentai,$nukitorisu){
     }
 
 
-$items = [1,2,3,4];
+for($i = 0; $i < count($record); $i++){
+    $a[] = $record[$i]['value'].'<br>';
+}
+
+$items = $a;
 $array_amount = count($items);
 $array_box = [];
-
 
 for($i = 1; $i <= $array_amount; $i++){
     if(empty($array_box)){
@@ -49,24 +54,22 @@ for($i = 1; $i <= $array_amount; $i++){
         $temps=kumiawase($items,$i);
         $array_box = array_merge($array_box,$temps);
     }
-    
-
 }
 
 echo'<pre>';
-print_r($array_box);
+var_dump($array_box);
 echo'</pre>';
 
 
-// $temp = [];
-// $temp[] = [1];
-// $temp[] = [2];
-// $temp[] = [3];
-// $temp[] = [1,2];
+// // $temp = [];
+// // $temp[] = [1];
+// // $temp[] = [2];
+// // $temp[] = [3];
+// // $temp[] = [1,2];
 
 
 
 
-// echo'<pre>';
-// print_r($temp);
-// echo'</pre>';
+// // echo'<pre>';
+// // print_r($temp);
+// // echo'</pre>';
