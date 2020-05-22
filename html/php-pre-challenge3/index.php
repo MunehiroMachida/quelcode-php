@@ -42,34 +42,48 @@ for($i = 0; $i < count($record); $i++){
     $a[] = $record[$i]['value'].'<br>';
 }
 
-$items = $a;
-$array_amount = count($items);
-$array_box = [];
-
-for($i = 1; $i <= $array_amount; $i++){
-    if(empty($array_box)){
-        $temps=kumiawase($items,$i);
-        $array_box = $temps;
-    }elseif(!empty($array_box)){
-        $temps=kumiawase($items,$i);
-        $array_box = array_merge($array_box,$temps);
-    }
+for($i = 0; $i < count($record); $i++){
+    $b[] = (int)$a[$i];
 }
 
 echo'<pre>';
-var_dump($array_box);
+var_dump($b);
 echo'</pre>';
 
-
-// // $temp = [];
-// // $temp[] = [1];
-// // $temp[] = [2];
-// // $temp[] = [3];
-// // $temp[] = [1,2];
+$c = $b[1]+$b[2];
 
 
+echo'<pre>';
+var_dump($b);
+echo'</pre>';
+// $items = $a;
+// $array_amount = count($items);
+// $array_box = [];
 
+// for($i = 1; $i <= $array_amount; $i++){
+//     if(empty($array_box)){
+//         $temps=kumiawase($items,$i);
+//         $array_box = $temps;
+//     }elseif(!empty($array_box)){
+//         $temps=kumiawase($items,$i);
+//         $array_box = array_merge($array_box,$temps);
+//     }
+// }
 
 // // echo'<pre>';
-// // print_r($temp);
+// // var_dump($array_box);
 // // echo'</pre>';
+
+
+// // // $temp = [];
+// // // $temp[] = [1];
+// // // $temp[] = [2];
+// // // $temp[] = [3];
+// // // $temp[] = [1,2];
+
+
+
+
+// // // echo'<pre>';
+// // // print_r($temp);
+// // // echo'</pre>';
