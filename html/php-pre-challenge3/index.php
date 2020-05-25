@@ -12,9 +12,13 @@ try{
 $records = $db->query('SELECT value FROM prechallenge3');
 $record = $records->fetchAll(PDO::FETCH_ASSOC);
 
+//一旦valuカラムから全部の数字を取り出して単次元配列にする処理
+$array_amount = count($record);
+for($i = 0; $i < $array_amount; $i++){
+    $record_array[] = (int)$record[$i]['value'];
+}
 
-
-
+//組み合わせを出す関数
 function kumiawase($zentai,$nukitorisu){
     $zentaisu=count($zentai);
     if($zentaisu<$nukitorisu){
@@ -37,53 +41,29 @@ function kumiawase($zentai,$nukitorisu){
         return $arrs;
     }
 
-
-for($i = 0; $i < count($record); $i++){
-    $a[] = $record[$i]['value'].'<br>';
+//全パターンの組み合わせを$array_boxに入れる処理
+for($i = 1; $i <= $array_amount; $i++){
+    if(empty($array_box)){
+        $temps=kumiawase($record_array,$i);
+        $array_box = $temps;
+    }elseif(!empty($array_box)){
+        $temps=kumiawase($record_array,$i);
+        $array_box = array_merge($array_box,$temps);
+    }
 }
 
-for($i = 0; $i < count($record); $i++){
-    $b[] = (int)$a[$i];
+
+//$limitの組み合わせを新しい配列に入れる処理
+for($i = 0; $i < count($array_box); $i++){
+    for($j = 0; $j < count($array_box[$i]); $j++){
+        if($limit == array_sum($array_box[$i])){
+            $sum_limit[] = $array_box[$i];
+            break;
+        }
+    }
 }
 
+//$limitを出力
 echo'<pre>';
-var_dump($b);
+print_r($sum_limit);
 echo'</pre>';
-
-$c = $b[1]+$b[2];
-
-
-echo'<pre>';
-var_dump($b);
-echo'</pre>';
-// $items = $a;
-// $array_amount = count($items);
-// $array_box = [];
-
-// for($i = 1; $i <= $array_amount; $i++){
-//     if(empty($array_box)){
-//         $temps=kumiawase($items,$i);
-//         $array_box = $temps;
-//     }elseif(!empty($array_box)){
-//         $temps=kumiawase($items,$i);
-//         $array_box = array_merge($array_box,$temps);
-//     }
-// }
-
-// // echo'<pre>';
-// // var_dump($array_box);
-// // echo'</pre>';
-
-
-// // // $temp = [];
-// // // $temp[] = [1];
-// // // $temp[] = [2];
-// // // $temp[] = [3];
-// // // $temp[] = [1,2];
-
-
-
-
-// // // echo'<pre>';
-// // // print_r($temp);
-// // // echo'</pre>';
