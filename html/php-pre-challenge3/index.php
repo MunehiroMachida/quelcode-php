@@ -8,7 +8,7 @@ if($limit <= 0 or $limit != (integer)$limit or $limit != is_numeric($limit)){
     $dbuser = 'test';
     $dbpassword = 'test';
     try{
-        $db = new PDO($dsn,$dbuser,$dbpaassword);
+        $db = new PDO($dsn,$dbuser,$dbpassword);
     }catch (PDOException $e){
         $DB_error ='DB接続エラー:'.$e->getMessage();
         exit($DB_error);
@@ -49,7 +49,7 @@ if($limit <= 0 or $limit != (integer)$limit or $limit != is_numeric($limit)){
         if(empty($array_box)){
             $temps=set_array($record_array,$i);
             $array_box = $temps;
-        }elseif(!empty($array_box)){
+        }else{
             $temps=set_array($record_array,$i);
             $array_box = array_merge($array_box,$temps);
         }
@@ -64,7 +64,7 @@ if($limit <= 0 or $limit != (integer)$limit or $limit != is_numeric($limit)){
             }
         }
     }
-    
+
     //$limitを出力
     $sum_limit_json = json_encode($sum_limit);
     echo'<pre>';
