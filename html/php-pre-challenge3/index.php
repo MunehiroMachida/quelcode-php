@@ -25,7 +25,7 @@ if($limit <= 0 or $limit != (integer)$limit or $limit != is_numeric($limit)){
     //参考https://stabucky.com/wp/archives/2188
     function set_array($total,$digit){  //$totalが$record_array。$record_arrayは上で単次元に直したやつ。$digitは桁数。
         $array_number = count($total); 
-        if($digit == 1){
+        if($digit === 1){
             for($i = 0; $i < $array_number; $i++){
                 $arrs[$i] = array($total[$i]); 
             }
@@ -56,9 +56,10 @@ if($limit <= 0 or $limit != (integer)$limit or $limit != is_numeric($limit)){
     }
 
     //$limitの組み合わせを新しい配列に入れる処理
+    $limit = (int)$limit;
     for($i = 0; $i < count($array_box); $i++){
         for($j = 0; $j < count($array_box[$i]); $j++){
-            if($limit == array_sum($array_box[$i])){
+            if($limit === array_sum($array_box[$i])){
                 $sum_limit[] = $array_box[$i];
                 break;
             }
