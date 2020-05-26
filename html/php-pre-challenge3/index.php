@@ -10,7 +10,7 @@ if($limit <= 0 or $limit != (integer)$limit or $limit != is_numeric($limit)){
     try{
         $db = new PDO($dsn,$dbuser,$dbpassword);
     }catch (PDOException $e){
-        $DB_error ='DB接続エラー:'.$e->getMessage();
+        $DB_error = 'DB接続エラー:'.$e->getMessage();
         exit($DB_error);
     }
     $records = $db->query('SELECT value FROM prechallenge3');
@@ -29,13 +29,13 @@ if($limit <= 0 or $limit != (integer)$limit or $limit != is_numeric($limit)){
             for($i = 0; $i < $array_number; $i++){
                 $arrs[$i] = array($total[$i]); 
             }
-        }elseif($digit>1){
-            $j=0;
-            for($i=0;$i<$array_number-$digit+1;$i++){
-                $ts=set_array(array_slice($total,$i+1),$digit-1); //array_sliceのパラメは(変数,前から何文字目,桁数)、ここ再帰か。
+        }elseif($digit > 1){
+            $j = 0;
+            for($i = 0; $i < $array_number - $digit + 1; $i++){
+                $ts = set_array(array_slice($total,$i + 1),$digit - 1); //array_sliceのパラメは(変数,前から何文字目,桁数)、ここ再帰か。
                 foreach($ts as $t){
                     array_unshift($t,$total[$i]);
-                    $arrs[$j]=$t;
+                    $arrs[$j] = $t;
                     $j++;
                 }
             } 
@@ -47,10 +47,10 @@ if($limit <= 0 or $limit != (integer)$limit or $limit != is_numeric($limit)){
     $array_box = [];
     for($i = 1; $i <= $array_amount; $i++){
         if(empty($array_box)){
-            $temps=set_array($record_array,$i);
+            $temps = set_array($record_array,$i);
             $array_box = $temps;
         }else{
-            $temps=set_array($record_array,$i);
+            $temps = set_array($record_array,$i);
             $array_box = array_merge($array_box,$temps);
         }
     }
@@ -66,8 +66,9 @@ if($limit <= 0 or $limit != (integer)$limit or $limit != is_numeric($limit)){
         }
     }
 
-    //$limitを出力
+    //$limitをjsonに変換して出力
     $sum_limit_json = json_encode($sum_limit);
+
     echo'<pre>';
     print_r($sum_limit_json);
     echo'</pre>';
