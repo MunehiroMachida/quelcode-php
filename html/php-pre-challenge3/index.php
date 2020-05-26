@@ -24,25 +24,25 @@ if($limit <= 0 or $limit != (integer)$limit or $limit != is_numeric($limit)){
 
     //組み合わせを出す関数
     //参考https://stabucky.com/wp/archives/2188
-    function set_array($total,$digit){
-        $zentaisu=count($total);
-        if($digit==1){
-            for($i=0;$i<$zentaisu;$i++){
-                $arrs[$i]=array($total[$i]);
-            }
-            }elseif($digit>1){
-            $j=0;
-            for($i=0;$i<$zentaisu-$digit+1;$i++){
-                $ts=set_array(array_slice($total,$i+1),$digit-1);
-                foreach($ts as $t){
-                array_unshift($t,$total[$i]);
-                $arrs[$j]=$t;
-                $j++;
+        function set_array($total,$digit){  //$totalが$record_array。$record_arrayは上で単次元に直したやつ。$digitは桁数。
+            $array_number = count($total); 
+            if($digit == 1){
+                for($i = 0; $i < $array_number; $i++){
+                    $arrs[$i] = array($total[$i]); 
                 }
+            }elseif($digit>1){
+                $j=0;
+                for($i=0;$i<$array_number-$digit+1;$i++){
+                    $ts=set_array(array_slice($total,$i+1),$digit-1); //array_sliceのパラメは(変数,前から何文字目,桁数)、ここ再帰か。
+                    foreach($ts as $t){
+                    array_unshift($t,$total[$i]);
+                    $arrs[$j]=$t;
+                    $j++;
+                    }
+                }
+                }
+                return $arrs;
             }
-            }
-            return $arrs;
-        }
     
     //全パターンの組み合わせを$array_boxに入れる処理
     $array_box = [];
@@ -55,8 +55,7 @@ if($limit <= 0 or $limit != (integer)$limit or $limit != is_numeric($limit)){
             $array_box = array_merge($array_box,$temps);
         }
     }
-    
-    
+
     //$limitの組み合わせを新しい配列に入れる処理
     for($i = 0; $i < count($array_box); $i++){
         for($j = 0; $j < count($array_box[$i]); $j++){
@@ -66,10 +65,7 @@ if($limit <= 0 or $limit != (integer)$limit or $limit != is_numeric($limit)){
             }
         }
     }
-    
     //$limitを出力
-
-
     $sum_limit_json = json_encode($sum_limit);
 
     echo'<pre>';
