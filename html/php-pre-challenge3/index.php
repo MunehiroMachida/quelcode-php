@@ -1,5 +1,11 @@
 <?php
 $limit = $_GET['target'];
+
+if(strpos($limit,'.0')){
+    http_response_code(400);
+    exit();
+}
+
 if($limit <= 0 or $limit != (integer)$limit or $limit != is_numeric($limit)){
     http_response_code(400);
     exit();
@@ -10,8 +16,9 @@ if($limit <= 0 or $limit != (integer)$limit or $limit != is_numeric($limit)){
     try{
         $db = new PDO($dsn,$dbuser,$dbpassword);
     }catch (PDOException $e){
-        $DB_error = 'DB接続エラー:'.$e->getMessage();
-        exit($DB_error);
+        echo 'DB接続エラー:'.$e->getMessage();
+        http_response_code(404);
+        exit();
     }
     $records = $db->query('SELECT value FROM prechallenge3');
     $record = $records->fetchAll(PDO::FETCH_ASSOC);
@@ -72,4 +79,4 @@ if($limit <= 0 or $limit != (integer)$limit or $limit != is_numeric($limit)){
     echo'<pre>';
     print_r($sum_limit_json);
     echo'</pre>';
-    }
+}
