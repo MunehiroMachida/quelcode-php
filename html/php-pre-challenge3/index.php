@@ -7,7 +7,7 @@ if($limit <= 0
     or $limit != is_numeric($limit)
     or strpos($limit,'.0')){
 
-    http_response_code(400);
+    http_response_code(500);
     exit();
 
 }else{
@@ -60,18 +60,15 @@ if($limit <= 0
 
     //$limitの組み合わせを新しい配列に入れる処理
     $limit = (int)$limit;
+    $sum_limit = [];
     for($i = 0; $i < count($array_box); $i++){
-            if($limit === array_sum($array_box[$i])){
-                $sum_limit[] = $array_box[$i];
+        if($limit === array_sum($array_box[$i])){
+            $sum_limit[] = $array_box[$i];
         }
     }
 
     //$limitをjsonに変換して出力
-    if(is_null($sum_limit)){
-        $sum_limit_json = '[]';
-    }else{
-        $sum_limit_json = json_encode($sum_limit);
-    }
+    $sum_limit_json = json_encode($sum_limit);
 
     echo($sum_limit_json);
 }
