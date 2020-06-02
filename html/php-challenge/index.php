@@ -66,6 +66,16 @@ function h($value) {
 function makeLink($value) {
 	return mb_ereg_replace("(https?)(://[[:alnum:]\+\$\;\?\.%,!#~*/:@&=_-]+)", '<a href="\1\2">\1\2</a>' , $value);
 }
+
+
+//自分がそのツイートにいいねしているか。色判定
+// $a = $db->prepare('SELECT posts_id,member_list FROM goods WHERE goods.posts_id=posts.id AND members.id=goods.menber_list');
+// if(!empty($a)){
+// 	$judgment = 'like';
+// }else{
+// 	$judgment = 'un_like';
+// }
+
 ?>
 <!DOCTYPE html>
 <html lang="ja">
@@ -100,35 +110,32 @@ function makeLink($value) {
       </div>
     </form>
 
-<?php
-foreach ($posts as $post):
-?>
+<?php foreach ($posts as $post): ?>
     <div class="msg">
     <img src="member_picture/<?php echo h($post['picture']); ?>" width="48" height="48" alt="<?php echo h($post['name']); ?>" />
     <p><?php echo makeLink(h($post['message'])); ?><span class="name">（<?php echo h($post['name']); ?>）</span>[<a href="index.php?res=<?php echo h($post['id']); ?>">Re</a>]</p>
     <p class="day"><a href="view.php?id=<?php echo h($post['id']); ?>"><?php echo h($post['created']); ?></a>
-		<?php
-if ($post['reply_post_id'] > 0):
-?>
-<a href="view.php?id=<?php echo
-h($post['reply_post_id']); ?>">
-返信元のメッセージ</a>
-<?php
-endif;
-?>
-<?php
-if ($_SESSION['id'] == $post['member_id']):
-?>
-[<a href="delete.php?id=<?php echo h($post['id']); ?>"
-style="color: #F33;">削除</a>]
-<?php
-endif;
-?>
+		
+		<?php if ($post['reply_post_id'] > 0): ?>
+			<a href="view.php?id=<?php echo h($post['reply_post_id']); ?>">返信元のメッセージ</a>
+		<?php endif; ?>
+
+		<?php if ($_SESSION['id'] == $post['member_id']): ?>
+		[<a href="delete.php?id=<?php echo h($post['id']); ?>"style="color: #F33;">削除</a>]
+		<?php endif; ?>
+
+
+
+<a href="like.php?id=<?php echo ($post['id']); ?>">いいね</a>
+
+
+<!-- とりあえず、キープ。一応member_id,
+ostsのid入るけど、細かい挙動がおかしい。 -->
+
+
     </p>
     </div>
-<?php
-endforeach;
-?>
+<?php endforeach; ?>
 
 <ul class="paging">
 <?php

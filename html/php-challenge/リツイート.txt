@@ -1,0 +1,62 @@
+いいねボタンを押下すると、ボタンがいいね状態になる
+※色の変化等にて表現してください
+
+
+自分の投稿か他人の投稿か
+
+カラム名一覧【usersテーブル】
+・id : 主キー
+・name ：アカウント名
+・email ：アカウントのメールアドレス
+・password ： アカウントのパスワード
+・created_at : datetime型で投稿された日時を保管
+
+カラム名一覧【tweetsテーブル】
+・id : 主キー
+・user_id : usersテーブルのidと連携している各アカウント一意のid
+・created_at : datetime型で投稿された日時を保管
+・tweet : text型で投稿したメッセージを保管
+
+カラム名一覧【replyテーブル】
+・id : 主キー
+・reply_user : リプライしたuserのidを保管
+・reply_message : text型で投稿したリプライを保管
+・replied_tweet_id : リプライしたtweetのidを保管
+
+
+
+カラム名一覧【noticeテーブル】
+・id : 主キー
+・created_at : datetime型で投稿された日時を保管
+・user_id : ログインしているアカウントのid
+・follow_check : bool値でフォロー通知のためのカラム(初期値はfalse)
+・following_id : フォローしたアカウントのid
+・reply_check : bool値でリプライ通知のためのカラム(初期値はfalse)
+・reply_user : リプライしたアカウントのid
+
+=============================================
+
+いいね自体はそのツイートにisreteert　をつけてそれを数として出す
+
+SUM(isretweet)　でいいね の合計
+    欲しいのはisretwwtが1のやつ
+
+他人がツイートしたやつだったら、グレー
+　それに自分がいいねしたら赤
+
+=============================================
+
+SELECT SUM(is_like)
+FROM  posts
+WHERE is_like = 1
+
+=============================================
+
+SELECT SUM(posts_id)
+FROM good_posts
+WHERE members_id
+
+=============================================
+
+INSERT INTO good_posts (posts_id,members_id)
+ VALUES ('Key','HTML');
