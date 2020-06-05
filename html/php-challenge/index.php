@@ -67,15 +67,6 @@ function makeLink($value) {
 	return mb_ereg_replace("(https?)(://[[:alnum:]\+\$\;\?\.%,!#~*/:@&=_-]+)", '<a href="\1\2">\1\2</a>' , $value);
 }
 
-
-//自分がそのツイートにいいねしているか。色判定
-// $a = $db->prepare('SELECT posts_id,member_list FROM goods WHERE goods.posts_id=posts.id AND members.id=goods.menber_list');
-// if(!empty($a)){
-// 	$judgment = 'like';
-// }else{
-// 	$judgment = 'un_like';
-// }
-
 ?>
 <!DOCTYPE html>
 <html lang="ja">
@@ -86,29 +77,30 @@ function makeLink($value) {
 	<title>ひとこと掲示板</title>
 
 	<link rel="stylesheet" href="style.css" />
+	<link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
 </head>
 
 <body>
 <div id="wrap">
-  <div id="head">
-    <h1>ひとこと掲示板</h1>
-  </div>
-  <div id="content">
-  	<div style="text-align: right"><a href="logout.php">ログアウト</a></div>
-    <form action="" method="post">
-      <dl>
-        <dt><?php echo h($member['name']); ?>さん、メッセージをどうぞ</dt>
-        <dd>
-          <textarea name="message" cols="50" rows="5"><?php echo h($message); ?></textarea>
-          <input type="hidden" name="reply_post_id" value="<?php echo h($_REQUEST['res']); ?>" />
-        </dd>
-      </dl>
-      <div>
-        <p>
-          <input type="submit" value="投稿する" />
-        </p>
-      </div>
-    </form>
+<div id="head">
+<h1>ひとこと掲示板</h1>
+</div>
+<div id="content">
+<div style="text-align: right"><a href="logout.php">ログアウト</a></div>
+<form action="" method="post">
+	<dl>
+	<dt><?php echo h($member['name']); ?>さん、メッセージをどうぞ</dt>
+	<dd>
+		<textarea name="message" cols="50" rows="5"><?php echo h($message); ?></textarea>
+		<input type="hidden" name="reply_post_id" value="<?php echo h($_REQUEST['res']); ?>" />
+	</dd>
+	</dl>
+	<div>
+	<p>
+		<input type="submit" value="投稿する" />
+	</p>
+	</div>
+</form>
 
 <?php foreach ($posts as $post): ?>
     <div class="msg">
@@ -124,15 +116,44 @@ function makeLink($value) {
 		[<a href="delete.php?id=<?php echo h($post['id']); ?>"style="color: #F33;">削除</a>]
 		<?php endif; ?>
 
+<?php
+// 値が入っていたら色変える start ====================================
+$is_good = $db->prepare('SELECT member_id FROM goods WHERE post_id=?');
+$is_good->bindParam(1,$post['id']);
+$is_good->execute();
+$d = $is_good->fetchAll(PDO::FETCH_ASSOC);
 
+$count_sql = 'SELECT member_id FROM goods';
+$stmt = $db->query($count_sql);
+$count = (int)$stmt->fetchColumn();
 
-<a href="like.php?id=<?php echo ($post['id']); ?>">いいね</a>
+for($i=0;$i<$count;$i++){
+	if(!empty($d[$i]['member_id'] == $_SESSION['id'])){
+		$judgment = 'like';
+		break;
+	}else{
+		$judgment = 'un_like';
+	}
+}
+?>
+<?php if($judgment == 'like'):?>
+	<a href="good.php?id=<?php echo ($post['id']); ?>"style="color: #F33;"><i class="far fa-thumbs-up"></i></i></a>
+<?php elseif($judgment == 'un_like'):?>
+	<a href="good.php?id=<?php echo ($post['id']); ?>"><i class="far fa-thumbs-up"></i></a>
+<?php endif; ?>
+<!-- 値が入っていたら色変える end ==================================== -->
 
-
-<!-- とりあえず、キープ。一応member_id,
-ostsのid入るけど、細かい挙動がおかしい。 -->
-
-
+<!-- いいねの数を表示 strat-->
+<span>
+<?php
+	$goods_count = $db->prepare('SELECT COUNT(post_id) FROM goods WHERE post_id=? GROUP BY post_id');
+	$goods_count->bindParam(1,$post['id']);
+	$goods_count->execute();
+	$goods_id_array = $goods_count->fetchAll(PDO::FETCH_ASSOC);
+	echo($goods_id_array[0]['COUNT(post_id)']);
+?>
+</span>
+<!-- いいねの数を表示　end -->
     </p>
     </div>
 <?php endforeach; ?>
