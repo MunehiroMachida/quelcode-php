@@ -132,13 +132,14 @@ for($i=0;$i<$count;$i++){
 		$judgment = 'like';
 		break;
 	}else{
-		$judgment = 'un_like';
+		$judgment = '';
 	}
 }
 ?>
+
 <?php if($judgment == 'like'):?>
 	<a href="good.php?id=<?php echo ($post['id']); ?>"style="color: #F33;"><i class="far fa-thumbs-up"></i></i></a>
-<?php elseif($judgment == 'un_like'):?>
+<?php else: ?>
 	<a href="good.php?id=<?php echo ($post['id']); ?>"><i class="far fa-thumbs-up"></i></a>
 <?php endif; ?>
 <!-- 値が入っていたら色変える end ==================================== -->
@@ -182,7 +183,7 @@ if ($page < $maxPage) {
 }
 ?>
 </ul>
-  </div>
+</div>
 </div>
 </body>
 </html>
