@@ -104,7 +104,33 @@ function makeLink($value) {
 
 <?php foreach ($posts as $post): ?>
     <div class="msg">
-    <img src="member_picture/<?php echo h($post['picture']); ?>" width="48" height="48" alt="<?php echo h($post['name']); ?>" />
+    
+	<!-- ============================================================ -->
+	<!-- 誰がリツイートしたかリツイート、表示 -->
+	<?php if ($post['the_retweeted_side'] == 1): ?>
+		<?php
+			$who_tweet = $post['whose_retweet'];
+			$member_picture = $db->prepare('SELECT picture FROM members WHERE id=?');
+			$member_picture->bindParam(1, $who_tweet);
+			$member_picture->execute();
+			$member_pictures = $member_picture->fetchAll(PDO::FETCH_ASSOC);
+		?>
+
+
+		<img src="member_picture/<?php echo h($member_pictures[0]['picture']); ?>" width="48" height="48" alt="<?php echo h($post['name']); ?>" />
+		<span style='font-size: 12px; color: #c0c0c0;'>
+		<img src="member_picture/<?php echo h($post['picture']); ?>" width="20" height="20" alt="" /><?php echo h($post['name']); ?>さんがリツイート
+		</span>
+		
+	<?php elseif ($post['the_retweeted_side'] == 0): ?>
+		<img src="member_picture/<?php echo h($post['picture']); ?>" width="48" height="48" alt="<?php echo h($post['name']); ?>" />
+	<?php endif; ?>
+
+	
+
+	<!-- ============================================================ -->
+
+
     <p><?php echo makeLink(h($post['message'])); ?><span class="name">（<?php echo h($post['name']); ?>）</span>[<a href="index.php?res=<?php echo h($post['id']); ?>">Re</a>]</p>
     <p class="day"><a href="view.php?id=<?php echo h($post['id']); ?>"><?php echo h($post['created']); ?></a>
 		
@@ -116,19 +142,66 @@ function makeLink($value) {
 		[<a href="delete.php?id=<?php echo h($post['id']); ?>"style="color: #F33;">削除</a>]
 		<?php endif; ?>
 
+
+
+<?php
+// リツイート値が入っていたら色変える start ====================================
+$is_retweet = $db->prepare('SELECT member_id FROM retweets_count WHERE post_id=?');
+$is_retweet->bindParam(1,$post['id']);
+$is_retweet->execute();
+$is_retweets = $is_retweet->fetchAll(PDO::FETCH_ASSOC);
+
+$count_sql = 'SELECT member_id FROM retweets_count';
+$stmt = $db->query($count_sql);
+$count = (int)$stmt->fetchColumn();
+
+for($i=0;$i<$count;$i++){
+if($post['is_retweet'] == 1){
+$judgment = 'retweet';
+break;
+}else{
+$judgment = '';
+}
+}
+?>
+
+
+<?php if($judgment == 'retweet'):?>
+<a href="retweet.php?id=<?php echo ($post['id']); ?>"style="color: #7fffd4;">リツイート</i></i></a>
+<?php else: ?>
+<a href="retweet.php?id=<?php echo ($post['id']); ?>">リツイート</i></a>
+
+<?php endif; ?>
+<!-- リツイート値が入っていたら色変える end ==================================== -->
+
+<!-- リツイートの数を表示 strat-->
+<span>
+<?php
+$retweets_count = $db->prepare('SELECT COUNT(post_id) FROM retweets_count WHERE post_id=? GROUP BY post_id');
+$retweets_count->bindParam(1,$post['id']);
+$retweets_count->execute();
+$retweets_id_array = $retweets_count->fetchAll(PDO::FETCH_ASSOC);
+echo($retweets_id_array[0]['COUNT(post_id)']);
+?>
+</span>
+<!-- リツイートの数を表示　end -->
+
+
+
+
 <?php
 // 値が入っていたら色変える start ====================================
 $is_good = $db->prepare('SELECT member_id FROM goods WHERE post_id=?');
 $is_good->bindParam(1,$post['id']);
 $is_good->execute();
-$d = $is_good->fetchAll(PDO::FETCH_ASSOC);
+$is_goods = $is_good->fetchAll(PDO::FETCH_ASSOC);
 
 $count_sql = 'SELECT member_id FROM goods';
 $stmt = $db->query($count_sql);
 $count = (int)$stmt->fetchColumn();
 
 for($i=0;$i<$count;$i++){
-	if(!empty($d[$i]['member_id'] == $_SESSION['id'])){
+	if(!empty($is_goods[$i]['member_id'] == $_SESSION['id'])){
 		$judgment = 'like';
 		break;
 	}else{
