@@ -63,7 +63,7 @@ if (isset($_SESSION['id'])) {
 
     $a = '';
     for($i=0;$i<$posts_table_count;$i++){
-        if(!empty($posts_retweet[$i]['motomoto_id'] == $my_posts['id'] && $posts_retweet[$i]['member_id'] == $_SESSION['id'])){
+        if(!empty($posts_retweet[$i]['originally_id'] == $my_posts['id'] && $posts_retweet[$i]['member_id'] == $_SESSION['id'])){
             $a = 'aru';
             break;
         }else{
@@ -75,14 +75,14 @@ if (isset($_SESSION['id'])) {
     // var_dump($_SESSION['id']);
 
     if($a == 'nai'){
-        $insert = $db->prepare('INSERT INTO posts SET message=?, member_id=?, created=NOW(), motomoto_id=?');
+        $insert = $db->prepare('INSERT INTO posts SET message=?, member_id=?, created=NOW(), originally_id=?');
         $insert->bindParam(1,$my_posts['message']);
         $insert->bindParam(2,$_SESSION['id']);
         $insert->bindParam(3,$id);
         $insert->execute();
     }elseif($a == 'aru'){
         // 削除する
-        $del = $db->prepare('DELETE FROM posts WHERE member_id=? AND motomoto_id=?');
+        $del = $db->prepare('DELETE FROM posts WHERE member_id=? AND originally_id=?');
         $del->bindParam(1,$_SESSION['id']);
         $del->bindParam(2,$_GET['id']);
         $del->execute();

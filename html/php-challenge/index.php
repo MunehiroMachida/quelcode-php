@@ -106,7 +106,7 @@ function makeLink($value) {
     <div class="msg">
     
 		<!-- 誰がリツイートしたかリツイート、表示 -->
-		<?php if ($post['motomoto_id'] > 0): ?>
+		<?php if ($post['originally_id'] > 0): ?>
 			<?php
 				$who_tweet = $post['member_id'];
 				$member_picture = $db->prepare('SELECT picture FROM members WHERE id=?');
@@ -118,7 +118,7 @@ function makeLink($value) {
 			<span style='font-size: 12px; color: #c0c0c0;'>
 			<img src="member_picture/<?php echo h($post['picture']); ?>" width="20" height="20" alt="" /><?php echo h($post['name']); ?>さんがリツイート
 			</span>
-		<?php elseif ($post['motomoto_id'] == 0): ?>
+		<?php elseif ($post['originally_id'] == 0): ?>
 			<img src="member_picture/<?php echo h($post['picture']); ?>" width="48" height="48" alt="<?php echo h($post['name']); ?>" />
 		<?php endif; ?>
 		<!-- 誰がリツイートしたかリツイート、表示 end-->

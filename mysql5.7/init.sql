@@ -17,7 +17,7 @@ CREATE TABLE `posts` (
       `created` datetime NOT NULL,
       `modified` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
       PRIMARY KEY (`id`),
-      `motomoto_id` int(11) NOT NULL
+      `originally_id` int(11) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 
 CREATE TABLE `goods` (
