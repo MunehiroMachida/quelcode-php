@@ -16,21 +16,6 @@ CREATE TABLE `posts` (
       `reply_post_id` int(11) NOT NULL,
       `created` datetime NOT NULL,
       `modified` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-      `originally_id` int(11) NOT NULL,
-      PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
-
-CREATE TABLE `goods` (
-      `id` int(11) NOT NULL AUTO_INCREMENT,
-      `post_id` int(11) NOT NULL,
-      `member_id` int(11) NOT NULL,
-      PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
-
-CREATE TABLE `retweets_count` (
-      `id` int(11) NOT NULL AUTO_INCREMENT,
-      `post_id` int(11) NOT NULL,
-      `member_id` int(11) NOT NULL,
       PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 

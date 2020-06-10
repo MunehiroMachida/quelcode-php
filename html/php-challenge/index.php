@@ -66,7 +66,6 @@ function h($value) {
 function makeLink($value) {
 	return mb_ereg_replace("(https?)(://[[:alnum:]\+\$\;\?\.%,!#~*/:@&=_-]+)", '<a href="\1\2">\1\2</a>' , $value);
 }
-
 ?>
 <!DOCTYPE html>
 <html lang="ja">
@@ -77,151 +76,59 @@ function makeLink($value) {
 	<title>ひとこと掲示板</title>
 
 	<link rel="stylesheet" href="style.css" />
-	<link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
 </head>
 
 <body>
 <div id="wrap">
-<div id="head">
-<h1>ひとこと掲示板</h1>
-</div>
-<div id="content">
-<div style="text-align: right"><a href="logout.php">ログアウト</a></div>
-<form action="" method="post">
-	<dl>
-	<dt><?php echo h($member['name']); ?>さん、メッセージをどうぞ</dt>
-	<dd>
-		<textarea name="message" cols="50" rows="5"><?php echo h($message); ?></textarea>
-		<input type="hidden" name="reply_post_id" value="<?php echo h($_REQUEST['res']); ?>" />
-	</dd>
-	</dl>
-	<div>
-	<p>
-		<input type="submit" value="投稿する" />
-	</p>
-	</div>
-</form>
+  <div id="head">
+    <h1>ひとこと掲示板</h1>
+  </div>
+  <div id="content">
+  	<div style="text-align: right"><a href="logout.php">ログアウト</a></div>
+    <form action="" method="post">
+      <dl>
+        <dt><?php echo h($member['name']); ?>さん、メッセージをどうぞ</dt>
+        <dd>
+          <textarea name="message" cols="50" rows="5"><?php echo h($message); ?></textarea>
+          <input type="hidden" name="reply_post_id" value="<?php echo h($_REQUEST['res']); ?>" />
+        </dd>
+      </dl>
+      <div>
+        <p>
+          <input type="submit" value="投稿する" />
+        </p>
+      </div>
+    </form>
 
-<?php foreach ($posts as $post): ?>
+<?php
+foreach ($posts as $post):
+?>
     <div class="msg">
-    
-		<!-- 誰がリツイートしたかリツイート、表示 -->
-		<?php if ($post['originally_id'] > 0): ?>
-			<?php
-				$who_tweet = $post['member_id'];
-				$member_picture = $db->prepare('SELECT picture FROM members WHERE id=?');
-				$member_picture->bindParam(1, $who_tweet);
-				$member_picture->execute();
-				$member_pictures = $member_picture->fetchAll(PDO::FETCH_ASSOC);
-			?>
-			<img src="member_picture/<?php echo h($member_pictures[0]['picture']); ?>" width="48" height="48" alt="<?php echo h($post['name']); ?>" />
-			<span style='font-size: 12px; color: #c0c0c0;'>
-			<img src="member_picture/<?php echo h($post['picture']); ?>" width="20" height="20" alt="" /><?php echo h($post['name']); ?>さんがリツイート
-			</span>
-		<?php elseif ($post['originally_id'] == 0): ?>
-			<img src="member_picture/<?php echo h($post['picture']); ?>" width="48" height="48" alt="<?php echo h($post['name']); ?>" />
-		<?php endif; ?>
-		<!-- 誰がリツイートしたかリツイート、表示 end-->
-
-
+    <img src="member_picture/<?php echo h($post['picture']); ?>" width="48" height="48" alt="<?php echo h($post['name']); ?>" />
     <p><?php echo makeLink(h($post['message'])); ?><span class="name">（<?php echo h($post['name']); ?>）</span>[<a href="index.php?res=<?php echo h($post['id']); ?>">Re</a>]</p>
     <p class="day"><a href="view.php?id=<?php echo h($post['id']); ?>"><?php echo h($post['created']); ?></a>
-		
-		<?php if ($post['reply_post_id'] > 0): ?>
-			<a href="view.php?id=<?php echo h($post['reply_post_id']); ?>">返信元のメッセージ</a>
-		<?php endif; ?>
-
-		<?php if ($_SESSION['id'] == $post['member_id']): ?>
-		[<a href="delete.php?id=<?php echo h($post['id']); ?>"style="color: #F33;">削除</a>]
-		<?php endif; ?>
-
-
-
-<?php
-// リツイート値が入っていたら色変える start ====================================
-$is_retweet = $db->prepare('SELECT * FROM retweets_count WHERE post_id=?');
-$is_retweet->bindParam(1,$post['id']);
-$is_retweet->execute();
-$is_retweets = $is_retweet->fetchAll(PDO::FETCH_ASSOC);
-//自分の投稿を取り出す
-$my_post = $db->prepare('SELECT * FROM posts WHERE id=?');
-$my_post->execute(array($post['id']));
-$my_posts = $my_post->fetch();
-//レコードの個数を取得
-$count_sql = 'SELECT COUNT(post_id) FROM retweets_count';
-$stmt = $db->query($count_sql);
-$count = (int)$stmt->fetchColumn();
-
-for($i=0;$i<$count;$i++){
-	if(!empty($is_retweets[$i]['post_id'] == $my_posts['id'] && $is_retweets[$i]['member_id'] == $_SESSION['id'])){
-		$judgment = 'retweet';
-		break;
-	}else{
-		$judgment = '';
-	}
-}
+		<?php
+if ($post['reply_post_id'] > 0):
 ?>
-<?php if($judgment == 'retweet'):?>
-<a href="retweet.php?id=<?php echo ($post['id']); ?>"style="color: #7fffd4;"><i class="fas fa-retweet"></i></i></a>
-<?php else: ?>
-<a href="retweet.php?id=<?php echo ($post['id']); ?>"><i class="fas fa-retweet"></i></a>
-
-<?php endif; ?>
-<!-- リツイート値が入っていたら色変える end ==================================== -->
-
-<!-- リツイートの数を表示 strat-->
-<span>
+<a href="view.php?id=<?php echo
+h($post['reply_post_id']); ?>">
+返信元のメッセージ</a>
 <?php
-$retweets_count = $db->prepare('SELECT COUNT(post_id) FROM retweets_count WHERE post_id=? GROUP BY post_id');
-$retweets_count->bindParam(1,$post['id']);
-$retweets_count->execute();
-$retweets_id_array = $retweets_count->fetchAll(PDO::FETCH_ASSOC);
-echo($retweets_id_array[0]['COUNT(post_id)']);
+endif;
 ?>
-</span>
-<!-- リツイートの数を表示　end -->
-
-<!-- いいね値が入っていたら色変える start ==================================== -->
 <?php
-$is_good = $db->prepare('SELECT member_id FROM goods WHERE post_id=?');
-$is_good->bindParam(1,$post['id']);
-$is_good->execute();
-$is_goods = $is_good->fetchAll(PDO::FETCH_ASSOC);
-
-$count_sql = 'SELECT member_id FROM goods';
-$stmt = $db->query($count_sql);
-$count = (int)$stmt->fetchColumn();
-
-for($i=0;$i<$count;$i++){
-	if(!empty($is_goods[$i]['member_id'] == $_SESSION['id'])){
-		$judgment = 'like';
-		break;
-	}else{
-		$judgment = '';
-	}
-}
+if ($_SESSION['id'] == $post['member_id']):
 ?>
-<?php if($judgment == 'like'):?>
-	<a href="good.php?id=<?php echo ($post['id']); ?>"style="color: #F33;"><i class="far fa-thumbs-up"></i></i></a>
-<?php else: ?>
-	<a href="good.php?id=<?php echo ($post['id']); ?>"><i class="far fa-thumbs-up"></i></a>
-<?php endif; ?>
-<!-- いいね値が入っていたら色変える end ==================================== -->
-
-<!-- いいねの数を表示 strat-->
-<span>
+[<a href="delete.php?id=<?php echo h($post['id']); ?>"
+style="color: #F33;">削除</a>]
 <?php
-	$goods_count = $db->prepare('SELECT COUNT(post_id) FROM goods WHERE post_id=? GROUP BY post_id');
-	$goods_count->bindParam(1,$post['id']);
-	$goods_count->execute();
-	$goods_id_array = $goods_count->fetchAll(PDO::FETCH_ASSOC);
-	echo($goods_id_array[0]['COUNT(post_id)']);
+endif;
 ?>
-</span>
-<!-- いいねの数を表示　end -->
     </p>
     </div>
-<?php endforeach; ?>
+<?php
+endforeach;
+?>
 
 <ul class="paging">
 <?php
@@ -247,7 +154,7 @@ if ($page < $maxPage) {
 }
 ?>
 </ul>
-</div>
+  </div>
 </div>
 </body>
 </html>
