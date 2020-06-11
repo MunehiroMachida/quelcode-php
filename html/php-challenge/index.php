@@ -74,7 +74,7 @@ function makeLink($value) {
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<title>ひとこと掲示板</title>
-
+	<link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
 	<link rel="stylesheet" href="style.css" />
 </head>
 
@@ -119,8 +119,30 @@ endif;
 <?php
 if ($_SESSION['id'] == $post['member_id']):
 ?>
-[<a href="delete.php?id=<?php echo h($post['id']); ?>"
-style="color: #F33;">削除</a>]
+[<a href="delete.php?id=<?php echo h($post['id']); ?>"style="color: #F33;">削除</a>]
+
+<!-- リツイート -->
+<?php
+	$post_id = $post['id'];
+	// 投稿を検査する
+	$count_retweets = $db->prepare('SELECT COUNT(originally_id) FROM posts WHERE id=?');
+	$count_retweets->execute(array($post_id));
+    $count_retweet = $count_retweets->fetch();
+?>
+<?php 
+// echo'<pre>';
+// var_dump($count_retweet['COUNT(originally_id)']);
+// echo'</pre>';
+?>
+
+	<?php if ($post['is_retweet'] == 1): ?>
+	<a href="retweet.php?id=<?php echo h($post['id']); ?>"style="color: #F33;"><i class="fas fa-retweet"></i></a>
+	<?php echo $count_retweet['COUNT(originally_id)']; ?>
+	<?php else: ?>
+	<a href="retweet.php?id=<?php echo h($post['id']); ?>"style=";"><i class="fas fa-retweet"></i></a>
+	<?php endif; ?>
+
+	
 <?php
 endif;
 ?>
