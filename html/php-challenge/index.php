@@ -104,10 +104,108 @@ function makeLink($value) {
 foreach ($posts as $post):
 ?>
     <div class="msg">
+		<!-- 誰がリツイートしたかリツイート、表示 strat ====================================-->
+			<?php if ($post['originally_id'] > 0): ?>
+			<?php
+				$who_tweet = $post['member_id'];
+				$member_picture = $db->prepare('SELECT picture FROM members WHERE id=?');
+				$member_picture->bindParam(1, $who_tweet);
+				$member_picture->execute();
+				$member_pictures = $member_picture->fetchAll(PDO::FETCH_ASSOC);
+			?>
+			<span style='font-size: 12px; color: #c0c0c0;'>
+			<?php echo h($post['name']); ?>さんがリツイート
+			</span>
+
+			<?php endif; ?>
+		<!-- 誰がリツイートしたかリツイート、表示　end ====================================-->
+
     <img src="member_picture/<?php echo h($post['picture']); ?>" width="48" height="48" alt="<?php echo h($post['name']); ?>" />
     <p><?php echo makeLink(h($post['message'])); ?><span class="name">（<?php echo h($post['name']); ?>）</span>[<a href="index.php?res=<?php echo h($post['id']); ?>">Re</a>]</p>
-    <p class="day"><a href="view.php?id=<?php echo h($post['id']); ?>"><?php echo h($post['created']); ?></a>
+	<p class="day"><a href="view.php?id=<?php echo h($post['id']); ?>"><?php echo h($post['created']); ?></a>
+
+	<!-- リツイート -->
 		<?php
+			$retweets_count_table = $db->prepare('SELECT * FROM retweets_count WHERE post_message=?');
+			$retweets_count_table->bindParam(1,$post['message']);
+			$retweets_count_table->execute();
+			$retweets_count_tables = $retweets_count_table->fetchAll(PDO::FETCH_ASSOC);
+
+			//レコード数を数えてくれる
+			$retweet_count_table_sql = 'SELECT COUNT(*) FROM retweets_count';
+			$stmt = $db->query($retweet_count_table_sql);
+			$retweet_count_table_amount = (int)$stmt->fetchColumn();
+			
+			for($i=0;$i<$retweet_count_table_amount;$i++){
+				$is_retweet = '';
+				if($retweets_count_tables[$i]['post_message'] == $post['message'] && !empty($retweets_count_tables[$i]['member_id'] == $_SESSION['id'])){
+					$is_retweet = 'true';
+					break;
+				}else{
+					$is_retweet = '';
+				}
+			}
+		?>
+		<?php if($is_retweet == 'true'): ?>
+			<a href="retweet.php?id=<?php echo h($post['id']); ?>"style="color: #F33;"><i class="fas fa-retweet"></i></a>
+		<?php else: ?>
+			<a href="retweet.php?id=<?php echo h($post['id']); ?>"style=""><i class="fas fa-retweet"></i></a>
+		<?php endif; ?>
+
+
+		<!-- リツイートの数を表示 strat ====================================-->
+			<span>
+			<?php
+				$retweets_amount = $db->prepare('SELECT COUNT(post_id) FROM retweets_count WHERE post_message=?');
+				$retweets_amount->bindParam(1,$post['message']);
+				$retweets_amount->execute();
+				$retweets_amounts = $retweets_amount->fetchAll(PDO::FETCH_ASSOC);
+				echo($retweets_amounts[0]['COUNT(post_id)']);
+			?>
+			</span>
+		<!-- リツイートの数を表示　end ====================================-->
+
+			<!-- いいね値が入っていたら色変える start ==================================== -->
+			<?php
+				$is_good = $db->prepare('SELECT * FROM goods WHERE post_message=?');
+				$is_good->bindParam(1,$post['message']);
+				$is_good->execute();
+				$is_goods = $is_good->fetchAll(PDO::FETCH_ASSOC);
+
+				$count_sql = 'SELECT member_id FROM goods';
+				$stmt = $db->query($count_sql);
+				$count = (int)$stmt->fetchColumn();
+
+				for($i=0;$i<$count;$i++){
+					if(!empty($is_goods[$i]['member_id'] == $_SESSION['id'])){
+						$judgment = 'like';
+						break;
+					}else{
+						$judgment = '';
+					}
+				}
+
+			?>
+			<?php if($judgment == 'like'):?>
+				<a href="good.php?id=<?php echo ($post['id']); ?>"style="color: #F33;"><i class="far fa-thumbs-up"></i></i></a>
+			<?php else: ?>
+				<a href="good.php?id=<?php echo ($post['id']); ?>"><i class="far fa-thumbs-up"></i></a>
+			<?php endif; ?>
+			<!-- いいね値が入っていたら色変える end ==================================== -->
+
+			<!-- いいねの数を表示 strat-->
+			<span>
+			<?php
+				$goods_count = $db->prepare('SELECT COUNT(posts_id) FROM goods WHERE post_message=?');
+				$goods_count->bindParam(1,$post['message']);
+				$goods_count->execute();
+				$goods_id_array = $goods_count->fetchAll(PDO::FETCH_ASSOC);
+				echo($goods_id_array[0]['COUNT(posts_id)']);
+				// var_dump($goods_id_array);
+			?>
+			</span>
+			<!-- いいねの数を表示　end -->
+<?php
 if ($post['reply_post_id'] > 0):
 ?>
 <a href="view.php?id=<?php echo
@@ -121,26 +219,6 @@ if ($_SESSION['id'] == $post['member_id']):
 ?>
 [<a href="delete.php?id=<?php echo h($post['id']); ?>"style="color: #F33;">削除</a>]
 
-<!-- リツイート -->
-<?php
-	$post_id = $post['id'];
-	// 投稿を検査する
-	$count_retweets = $db->prepare('SELECT COUNT(originally_id) FROM posts WHERE id=?');
-	$count_retweets->execute(array($post_id));
-    $count_retweet = $count_retweets->fetch();
-?>
-<?php 
-// echo'<pre>';
-// var_dump($count_retweet['COUNT(originally_id)']);
-// echo'</pre>';
-?>
-
-	<?php if ($post['is_retweet'] == 1): ?>
-	<a href="retweet.php?id=<?php echo h($post['id']); ?>"style="color: #F33;"><i class="fas fa-retweet"></i></a>
-	<?php echo $count_retweet['COUNT(originally_id)']; ?>
-	<?php else: ?>
-	<a href="retweet.php?id=<?php echo h($post['id']); ?>"style=";"><i class="fas fa-retweet"></i></a>
-	<?php endif; ?>
 
 	
 <?php
