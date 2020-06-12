@@ -24,7 +24,7 @@ if (isset($_SESSION['id'])) {
         }
     }
 
-    if($is_retweet == 'true'){
+    if($message['originally_id'] == 0 && $is_retweet == 'true'){
         $delete_post = $db->prepare('DELETE FROM posts WHERE member_id=? AND originally_id=?');
         $delete_post->bindParam(1,$_SESSION['id']);
         $delete_post->bindParam(2,$id);
@@ -34,6 +34,15 @@ if (isset($_SESSION['id'])) {
         $delete_retweets_count->bindParam(1,$message['id']);
         $delete_retweets_count->bindParam(2,$message['message']);
         $delete_retweets_count->bindParam(3,$_SESSION['id']);
+        $delete_retweets_count->execute();
+    }elseif($message['originally_id'] > 0 && $is_retweet == 'true'){
+        $delete_post = $db->prepare('DELETE FROM posts WHERE id=?');
+        $delete_post->bindParam(1,$id);
+        $delete_post->execute();
+
+        $delete_retweets_count = $db->prepare('DELETE FROM retweets_count WHERE  post_message=? AND member_id=?');
+        $delete_retweets_count->bindParam(1,$message['message']);
+        $delete_retweets_count->bindParam(2,$_SESSION['id']);
         $delete_retweets_count->execute();
     }else{
         $plus_post = $db->prepare('INSERT INTO posts SET message=?, member_id=?, created=NOW(), originally_id=?');
@@ -47,8 +56,9 @@ if (isset($_SESSION['id'])) {
         $plus_retweets_count->bindParam(2,$message['message']);
         $plus_retweets_count->bindParam(3,$_SESSION['id']);
         $plus_retweets_count->execute();
-    }
+        }
 }
+
 
 
 header('Location: index.php'); exit();

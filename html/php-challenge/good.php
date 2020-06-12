@@ -24,11 +24,15 @@ if (isset($_SESSION['id'])) {
         }
     }
 
-    if($is_good == 'true'){
-        $delete_goods = $db->prepare('DELETE FROM goods WHERE post_id=? AND post_message=? AND member_id=?');
-        $delete_goods->bindParam(1,$message['id']);
-        $delete_goods->bindParam(2,$message['message']);
-        $delete_goods->bindParam(3,$_SESSION['id']);
+    if($message['originally_id'] == 0 && $is_good == 'true'){
+        $delete_goods = $db->prepare('DELETE FROM goods WHERE post_message=? AND member_id=?');
+        $delete_goods->bindParam(1,$message['message']);
+        $delete_goods->bindParam(2,$_SESSION['id']);
+        $delete_goods->execute();
+    }elseif($message['originally_id'] > 0 && $is_good == 'true'){
+        $delete_goods = $db->prepare('DELETE FROM goods WHERE post_message=? AND member_id=?');
+        $delete_goods->bindParam(1,$message['message']);
+        $delete_goods->bindParam(2,$_SESSION['id']);
         $delete_goods->execute();
     }else{
         $plus_goods = $db->prepare('INSERT INTO goods SET post_id=?, post_message=?, member_id=?');
