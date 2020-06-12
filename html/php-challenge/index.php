@@ -154,57 +154,55 @@ foreach ($posts as $post):
 
 
 		<!-- リツイートの数を表示 strat ====================================-->
-			<span>
-			<?php
-				$retweets_amount = $db->prepare('SELECT COUNT(post_id) FROM retweets_count WHERE post_message=?');
-				$retweets_amount->bindParam(1,$post['message']);
-				$retweets_amount->execute();
-				$retweets_amounts = $retweets_amount->fetchAll(PDO::FETCH_ASSOC);
-				echo($retweets_amounts[0]['COUNT(post_id)']);
-			?>
-			</span>
+		<span>
+		<?php
+			$retweets_amount = $db->prepare('SELECT COUNT(post_id) FROM retweets_count WHERE post_message=?');
+			$retweets_amount->bindParam(1,$post['message']);
+			$retweets_amount->execute();
+			$retweets_amounts = $retweets_amount->fetchAll(PDO::FETCH_ASSOC);
+			echo($retweets_amounts[0]['COUNT(post_id)']);
+		?>
+		</span>
 		<!-- リツイートの数を表示　end ====================================-->
 
-			<!-- いいね値が入っていたら色変える start ==================================== -->
-			<?php
-				$is_good = $db->prepare('SELECT * FROM goods WHERE post_message=?');
-				$is_good->bindParam(1,$post['message']);
-				$is_good->execute();
-				$is_goods = $is_good->fetchAll(PDO::FETCH_ASSOC);
+		<!-- いいね値が入っていたら色変える start ==================================== -->
+		<?php
+			$is_good = $db->prepare('SELECT * FROM goods WHERE post_message=?');
+			$is_good->bindParam(1,$post['message']);
+			$is_good->execute();
+			$is_goods = $is_good->fetchAll(PDO::FETCH_ASSOC);
 
-				$count_sql = 'SELECT member_id FROM goods';
-				$stmt = $db->query($count_sql);
-				$count = (int)$stmt->fetchColumn();
+			$count_sql = 'SELECT member_id FROM goods';
+			$stmt = $db->query($count_sql);
+			$count = (int)$stmt->fetchColumn();
 
-				for($i=0;$i<$count;$i++){
-					if(!empty($is_goods[$i]['member_id'] == $_SESSION['id'])){
-						$judgment = 'like';
-						break;
-					}else{
-						$judgment = '';
-					}
+			for($i=0;$i<$count;$i++){
+				if(!empty($is_goods[$i]['member_id'] == $_SESSION['id'])){
+					$judgment = 'like';
+					break;
+				}else{
+					$judgment = '';
 				}
+			}
+		?>
+		<?php if($judgment == 'like'):?>
+			<a href="good.php?id=<?php echo ($post['id']); ?>"style="color: #F33;"><i class="far fa-thumbs-up"></i></i></a>
+		<?php else: ?>
+			<a href="good.php?id=<?php echo ($post['id']); ?>"><i class="far fa-thumbs-up"></i></a>
+		<?php endif; ?>
+		<!-- いいね値が入っていたら色変える end ==================================== -->
 
-			?>
-			<?php if($judgment == 'like'):?>
-				<a href="good.php?id=<?php echo ($post['id']); ?>"style="color: #F33;"><i class="far fa-thumbs-up"></i></i></a>
-			<?php else: ?>
-				<a href="good.php?id=<?php echo ($post['id']); ?>"><i class="far fa-thumbs-up"></i></a>
-			<?php endif; ?>
-			<!-- いいね値が入っていたら色変える end ==================================== -->
-
-			<!-- いいねの数を表示 strat-->
-			<span>
-			<?php
-				$goods_count = $db->prepare('SELECT COUNT(posts_id) FROM goods WHERE post_message=?');
-				$goods_count->bindParam(1,$post['message']);
-				$goods_count->execute();
-				$goods_id_array = $goods_count->fetchAll(PDO::FETCH_ASSOC);
-				echo($goods_id_array[0]['COUNT(posts_id)']);
-				// var_dump($goods_id_array);
-			?>
-			</span>
-			<!-- いいねの数を表示　end -->
+		<!-- いいねの数を表示 strat-->
+		<span>
+		<?php
+			$goods_count = $db->prepare('SELECT COUNT(post_id) FROM goods WHERE post_message=?');
+			$goods_count->bindParam(1,$post['message']);
+			$goods_count->execute();
+			$goods_id_array = $goods_count->fetchAll(PDO::FETCH_ASSOC);
+			echo($goods_id_array[0]['COUNT(post_id)']);
+		?>
+		</span>
+		<!-- いいねの数を表示　end -->
 <?php
 if ($post['reply_post_id'] > 0):
 ?>
