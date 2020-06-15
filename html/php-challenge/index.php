@@ -168,12 +168,11 @@ function makeLink($value) {
 				$stmt = $db->query($count_sql);
 				$count = (int)$stmt->fetchColumn();
 
+				$judgment = '';
 				for($i=0;$i<$count;$i++){
 					if(!empty($is_goods[$i]['member_id'] == $_SESSION['id'])){
 						$judgment = 'like';
 						break;
-					}else{
-						$judgment = '';
 					}
 				}
 			?>
