@@ -132,14 +132,12 @@ function makeLink($value) {
 				for($i=0;$i<$retweet_count_table_amount;$i++){
 					$is_retweet = '';
 					if($retweets_count_tables[$i]['post_message'] == $post['message'] && !empty($retweets_count_tables[$i]['member_id'] == $_SESSION['id'])){
-						$is_retweet = 'true';
+						$is_retweet = true;
 						break;
-					}else{
-						$is_retweet = '';
 					}
 				}
 			?>
-			<?php if($is_retweet == 'true'): ?>
+			<?php if($is_retweet): ?>
 				<a href="retweet.php?id=<?php echo h($post['id']); ?>"style="color: #66cdaa;"><i class="fas fa-retweet"></i></a>
 			<?php else: ?>
 				<a href="retweet.php?id=<?php echo h($post['id']); ?>"style=""><i class="fas fa-retweet"></i></a>
