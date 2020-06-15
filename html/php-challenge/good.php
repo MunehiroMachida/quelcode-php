@@ -19,17 +19,17 @@ if (isset($_SESSION['id'])) {
     $good_count_table_amount = (int) $stmt->fetchColumn();
 
     for ($i = 0; $i < $good_count_table_amount; $i++) {
-        if ($goods_tables[$i]['member_id'] == $_SESSION['id'] && $goods_tables[$i]['post_message'] == $message['message']) {
-            $is_good = 'true';
+        if ($goods_tables[$i]['member_id'] === $_SESSION['id'] && $goods_tables[$i]['post_message'] === $message['message']) {
+            $is_good = true;
         }
     }
 
-    if ($message['originally_id'] == 0 && $is_good == 'true') {
+    if ($message['originally_id'] === (string) 0 && $is_good === true) {
         $delete_goods = $db->prepare('DELETE FROM goods WHERE post_message=? AND member_id=?');
         $delete_goods->bindParam(1, $message['message']);
         $delete_goods->bindParam(2, $_SESSION['id']);
         $delete_goods->execute();
-    } elseif ($message['originally_id'] > 0 && $is_good == 'true') {
+    } elseif ($message['originally_id'] > (string) 0 && $is_good === true) {
         $delete_goods = $db->prepare('DELETE FROM goods WHERE post_message=? AND member_id=?');
         $delete_goods->bindParam(1, $message['message']);
         $delete_goods->bindParam(2, $_SESSION['id']);

@@ -107,7 +107,7 @@ function makeLink($value)
 			<?php foreach ($posts as $post) : ?>
 				<div class="msg">
 					<!-- 誰がリツイートしたかリツイート、表示 start ====================================-->
-					<?php if ($post['originally_id'] > 0 && $post['member_id'] == $_SESSION['id']) : ?>
+					<?php if ($post['originally_id'] > 0 && $post['member_id'] === $_SESSION['id']) : ?>
 						<span style='font-size: 12px; color: #c0c0c0;'>リツイート済み</span>
 					<?php elseif ($post['originally_id'] > 0 && $post['member_id'] != $_SESSION['id']) : ?>
 						<span style='font-size: 12px; color: #c0c0c0;'><?php echo h($post['name']); ?>さんがリツイート</span>
@@ -135,7 +135,7 @@ function makeLink($value)
 
 						for ($i = 0; $i < $retweet_count_table_amount; $i++) {
 							$is_retweet = '';
-							if ($retweets_count_tables[$i]['post_message'] == $post['message'] && !empty($retweets_count_tables[$i]['member_id'] == $_SESSION['id'])) {
+							if ($retweets_count_tables[$i]['post_message'] === $post['message'] && !empty($retweets_count_tables[$i]['member_id'] === $_SESSION['id'])) {
 								$is_retweet = true;
 								break;
 							}
@@ -168,19 +168,19 @@ function makeLink($value)
 						$is_good->execute();
 						$is_goods = $is_good->fetchAll(PDO::FETCH_ASSOC);
 
-						$count_sql = 'SELECT member_id FROM goods';
+						$count_sql = 'SELECT COUNT(*) FROM goods';
 						$stmt = $db->query($count_sql);
 						$count = (int) $stmt->fetchColumn();
 
 						$judgment = '';
 						for ($i = 0; $i < $count; $i++) {
-							if (!empty($is_goods[$i]['member_id'] == $_SESSION['id'])) {
+							if (!empty($is_goods[$i]['member_id'] === $_SESSION['id'])) {
 								$judgment = 'like';
 								break;
 							}
 						}
 						?>
-						<?php if ($judgment == 'like') : ?>
+						<?php if ($judgment === 'like') : ?>
 							<a href="good.php?id=<?php echo ($post['id']); ?>" style="color: #ff69b4;"><i class="far fa-thumbs-up"></i></i></a>
 						<?php else : ?>
 							<a href="good.php?id=<?php echo ($post['id']); ?>"><i class="far fa-thumbs-up"></i></a>
@@ -202,7 +202,7 @@ function makeLink($value)
 						<?php if ($post['reply_post_id'] > 0) : ?>
 							<a href="view.php?id=<?php echo h($post['reply_post_id']); ?>">返信元のメッセージ</a>
 						<?php endif; ?>
-						<?php if ($_SESSION['id'] == $post['member_id']) : ?>
+						<?php if ($_SESSION['id'] === $post['member_id']) : ?>
 							[<a href="delete.php?id=<?php echo h($post['id']); ?>" style="color: #F33;">削除</a>]
 						<?php endif; ?>
 					</p>
