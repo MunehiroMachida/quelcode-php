@@ -140,7 +140,7 @@ function makeLink($value) {
 				}
 			?>
 			<?php if($is_retweet == 'true'): ?>
-				<a href="retweet.php?id=<?php echo h($post['id']); ?>"style="color: #F33;"><i class="fas fa-retweet"></i></a>
+				<a href="retweet.php?id=<?php echo h($post['id']); ?>"style="color: #66cdaa;"><i class="fas fa-retweet"></i></a>
 			<?php else: ?>
 				<a href="retweet.php?id=<?php echo h($post['id']); ?>"style=""><i class="fas fa-retweet"></i></a>
 			<?php endif; ?>
@@ -180,7 +180,7 @@ function makeLink($value) {
 				}
 			?>
 			<?php if($judgment == 'like'):?>
-				<a href="good.php?id=<?php echo ($post['id']); ?>"style="color: #F33;"><i class="far fa-thumbs-up"></i></i></a>
+				<a href="good.php?id=<?php echo ($post['id']); ?>"style="color: #ff69b4;"><i class="far fa-thumbs-up"></i></i></a>
 			<?php else: ?>
 				<a href="good.php?id=<?php echo ($post['id']); ?>"><i class="far fa-thumbs-up"></i></a>
 			<?php endif; ?>
